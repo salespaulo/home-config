@@ -1,0 +1,101 @@
+function testargs() {
+IMPRIME=0;
+
+if [ -z $0 ] 
+then
+	IMPRIME=1;
+fi
+
+echo "[S?] == $?";
+
+if [ -z $1 ] 
+then
+	IMPRIME=1;
+fi
+
+echo "[S?] == $?";
+
+if [ "${IMPRIME}" -eq 0 ]
+then
+	echo "[S#] == $#";
+	echo "[S*] == $*";
+else
+	echo "[IMPRIME] != 0";
+fi
+
+if [ $0 ]
+then
+	echo "S0 tem valor: $0";
+fi
+
+if [ $1 ]
+then
+	echo "S1 tem valor: $1";
+fi
+}
+
+function testcase() {
+
+if [ $# -lt 1 ] 
+then
+	echo "Especifique um argumento"
+	return 1
+fi
+
+case $1 in 
+	start)
+		echo "Servico startado!"
+		;;
+	stop)
+		echo "Servico parado!"
+		;;
+	restart)
+		echo "Servico restartado!"
+		;;
+	*)
+		echo "Opcao invalida!"
+		;;
+esac
+
+}
+
+function testfor() {
+
+if [ $# -le 0 ]
+then
+	echo "Especifique um ou mais args"
+	return 1
+fi
+
+for arg in $*
+do
+	echo "$arg"
+done
+
+}
+
+function testwhile() {
+
+if [ $# -qt 0 ]
+then
+	echo "Especifique um arg"
+	return 1
+fi
+
+CONT=0
+
+while [ $CONT -le $1 ]
+do
+	echo "$CONT"
+	CONT=`expr $CONT + 1`
+done
+}
+
+function testfor2() {
+
+for ARQUIVO in `ls -h`
+do
+	echo "$ARQUIVO"
+done
+
+}

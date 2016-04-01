@@ -1,0 +1,231 @@
+#!/bin/sh
+###########################################################################
+# .bashrc_func                                                            #
+# @author Paulo R. A. Sales.                                              #
+# Define as funcoes de ambiente que o bashrc utiliza e que o usuario tb.  #
+###########################################################################
+
+#Carregando funcoes utilitarias
+[ -f $HOME/home/bin/utils_func.sh ] && source ~/home/bin/utils_func.sh
+
+## FUNCOES ##
+
+# Funcao zueira para gerar numeros para megasena!
+megasena () {
+  for num in 1 2 3 4 5 6;
+  do
+    echo -n "$( expr $RANDOM % 60 ) ";
+  done && echo ""
+}
+
+############################################################################
+#rm_dir 	 		                                           #
+#Remove todas as pastas com nome da pasta passada como parametro recursivo #
+############################################################################
+function rm_dir() {
+ERROR="Usage rm_dir [dir]\n[dir]\n
+\tPasta que deve ser excluida, ex.: CVS, .svn"
+
+if [ "${#}" -lt 1 ]
+then
+  infoalert ${ERROR}
+  return ${RET_ERROR}
+fi
+
+silentexec -n "rm -rf `find . -type d -name "${1}"`" "Excluindo... [${1}]"
+}
+
+############################################################################
+#templatec								   #
+#Controi uma nova estrutura de dir. e build.xml para um projeto java       #
+############################################################################
+function templatec() {
+ERROR="Usage templatec [type] [project]\n[type]\n
+\t-l\t--lib\t: Lib .a\n\t-e\t--exec\t: executavel\n\t-s\t--share\t: shared lib .so.\n[project]\n
+\tCaminho e nome do projeto. OBS: O nome do diretorio do projeto sera o nome do projeto\n"
+
+if [ "${#}" -lt 2 ]
+then
+  infoalert ${ERROR}
+  return ${RET_ERROR}
+fi
+
+case "${1}" in
+  -l|--lib)
+    silentexec -n "mkdir -p ${2}/src ${2}/test ${2}/lib" "Criando estrutura de diretorios..."
+    silentexec -n "genmake.sh lib `basename ${2}` ${2}/src/Makefile" "Gerando o Makefile..."
+    silentexec -n "touch ${2}/src/`basename ${2}`.c" "Gerando `basename ${2}`.c DEFAULT"
+    ;;
+  -e|--exec)
+    silentexec -n "mkdir -p ${2}/src/ ${2}/bin ${2}/test ${2}/src/include" "Criando estrutura de diretorios..."
+    silentexec -n "touch ${2}/src/`basename ${2}`.c" "Gerando `basename ${2}`.c DEFAULT"
+    silentexec -n "genmake.sh prog `basename ${2}` ${2}/src/Makefile" "Gerando o Makefile..."
+    infolog "Alterando Makefile..."
+    sed "s/INCLUDES=  \-I\./INCLUDES= \-I\.\/include/g" ${2}/src/Makefile > .sedtmp
+
+    if [ "${?}" -eq "0" ]
+    then
+      infosuccess "ETAPA 1: Makefile alterado com sucesso!"
+    else
+      infoalert "ERRO alterando Makefile!"
+      return 1;
+    fi
+
+    cat .sedtmp > ${2}/src/Makefile
+    sed "s/BASEINSTALL=\.\/bin/BASEINSTALL=\.\.\/bin/g" ${2}/src/Makefile > .sedtmp
+
+    if [ "${?}" -eq "0" ]
+    then
+      infosuccess "ETAPA 2: Makefile alterado com sucesso!"
+    else
+      infoalert "ERRO alterando Makefile!"
+      return 1;
+    fi
+
+    cat .sedtmp > ${2}/src/Makefile
+    sed "s/CC=/CC=gcc/g" ${2}/src/Makefile > .sedtmp
+
+    if [ "${?}" -eq "0" ]
+    then
+      infosuccess "ETAPA 3: Makefile alterado com sucesso!"
+    else
+      infoalert "ERRO alterando Makefile!"
+      return 1;
+    fi
+
+    cat .sedtmp > ${2}/src/Makefile
+    sed "s/OBJS =/OBJS = `basename ${2}`.o/g" ${2}/src/Makefile > .sedtmp
+
+    if [ "${?}" -eq "0" ]
+    then
+      infosuccess "ETAPA 4: Makefile alterado com sucesso!"
+    else
+      infoalert "ERRO alterando Makefile!"
+      return 1;
+    fi
+
+    cat .sedtmp > ${2}/src/Makefile
+
+
+    cat >> "${2}/src/`basename ${2}`.c" << EOF
+
+    #include <stdio.h>
+
+    int main (void) {
+    printf("Implemente aqui\n");
+    return 1;
+  }
+
+  EOF
+
+  ;;
+-s|--share)
+  silentexec -n "mkdir -p ${2}/src ${2}/test ${2}/lib" "Criando estrutura de diretorios..."
+  silentexec -n "genmake.sh shared `basename ${2}` ${2}/src/Makefile" "Gerando o Makefile..."
+  silentexec -n "touch ${2}/src/`basename ${2}`.c" "Gerando `basename ${2}`.c DEFAULT"
+  ;;
+*)
+  infoalert ${ERROR}
+  return ${RET_ERROR}
+  ;;
+	esac
+
+	if [ "${?}" -eq "0" ]
+	then
+	  infosuccess "Projeto criado com sucesso!"
+	fi
+      }
+
+      ############################################################################
+      #templatejava															   #
+      #Controi uma nova estrutura de dir. e build.xml para um projeto java       #
+      ############################################################################
+      function templatejava() {
+      ERROR="Usage templatejava [project] [jdk]\n[project]\n
+      \tCaminho e nome do projeto.\n[jdk]\n
+      \t--jse\t: Java Standart Edition.\n\t--jee\t: Java Enterprise Edition."
+
+      if [ "${#}" -lt 2 ]
+      then
+	infoalert ${ERROR}
+	return ${RET_ERROR}
+      fi
+
+      case "${2}" in
+	--jse|--JSE)
+	  if [ -d "${TEMPLATE_DIR}/jse" ]
+	  then
+	    silentexec -n "mkdir -p ${1}/src ${1}/test ${1}/lib" "Criando estrutura de diretorios..."
+	    silentexec -n "cp ${TEMPLATE_DIR}/jse/build.* ${1}" "Copiando arquivos do ant..."
+	  else
+	    infoalert "${TEMPLATE_DIR}/jse/: Nao existe!"
+	    return ${RET_ERROR}
+	  fi
+
+	  ;;
+	--jee|--JEE)
+	  if [ -d "${TEMPLATE_DIR}/jee" ]
+	  then
+	    silentexec -n "mkdir -p ${1}/src/java ${1}/src/conf ${1}/test ${1}/lib ${1}/web/WEB-INF" "Criando estrutura de diretorios..."
+	    silentexec -n "cp ${TEMPLATE_DIR}/jee/web.xml ${1}/web/WEB-INF" "Copiando descritor web.xml..."
+	    silentexec -n "cp ${TEMPLATE_DIR}/jee/build.* ${1}" "Copiando arquivos do ant..."
+	  else
+	    infoalert "${TEMPLATE_DIR}/jee/: Nao existe!"
+	    return ${RET_ERROR}
+	  fi
+	  ;;
+	*)
+	  infoalert ${ERROR}
+	  return ${RET_ERROR}
+	  ;;
+      esac
+
+      if [ "${?}" -eq 0 ]
+      then
+	infolog "Nao esquecer de alterar os arquivos de config. do ant."
+	infosuccess "Projeto criado com sucesso!"
+      fi
+    }
+
+    ############################################################################
+    #Funcao para calcular cpf pelo dia										   #
+    ############################################################################
+    function cpf()
+    {
+      data=`date +%d%m%y`
+      echo "DATA: $data"
+      #se estiver vazio
+      if [ -z "$1" ]
+      then
+	calcCpf $data 10
+      else
+	calcCpf $data $1
+      fi
+    }
+
+    ############################################################################
+    #Encontra o termo passado nos jars                                         #
+    ############################################################################
+    function findjars() {
+    if [ "${1:0:1}" = "-" ]
+    then
+      GREP_OPTS=$1
+      shift
+    else
+      GREP_OPTS=
+    fi
+
+    for arg in $*
+    do
+      for d in .
+      do
+	echo -e "\033[33;1m===== Procurando ${arg} em ${d} =====\033[m "
+	for file in `find ${d} -type f \( -name "*.jar" \)`
+	do
+	  echo ${file}
+	  jar -tvf ${file} | grep ${GREP_OPTS} ${arg}
+	done
+      done
+      echo
+    done
+  }

@@ -1,0 +1,36 @@
+###########################################################################
+# .bashrc_define                                                          #
+# @author Paulo R. A. Sales.                                              #
+# Define as variaveis de ambiente que o bashrc utiliza.                   #
+###########################################################################
+
+# Variaveis auxiliares
+export EMAIL=salespaulo08@gmail.com
+
+# Maven
+export MAVEN_OPTS="-Xms1G -Xmx1G -XX:MaxPermSize=512m"
+export M2_HOME=${HOME}/home/local/maven
+export M2=${M2_HOME}/bin
+
+# Java
+# export JAVA_HOME=~/local/java instalado pelo sistema
+
+# Ant
+export ANT_HOME=$HOME/home/local/ant
+
+# Tomcat
+export TOMCAT_HOME=$HOME/home/local/tomcat
+
+# Scala
+export SCALA_HOME=$HOME/home/local/scala
+
+# SBT - Simple(Scala) Build Tool
+export SBT_HOME="$HOME/home/local/sbt"
+
+# RVM - Ruby Version Management
+export RVM_HOME=$HOME/.rvm
+
+# PATH
+export PATH="$PATH:SCALA_HOME/bin:$SBT_HOME/bin:$M2:$ANT/bin:$RVM_HOME/bin" # Add RVM to PATH for scripting
+
+###########################################################################
