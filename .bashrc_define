@@ -30,7 +30,16 @@ export SBT_HOME="$HOME/home/local/sbt"
 # RVM - Ruby Version Management
 export RVM_HOME=$HOME/.rvm
 
+# Scala
+export SCALA_HOME=/Users/salespaulo/home/local/scala
+
+# Clojure
+export CLOJURE_HOME=/Users/salespaulo/home/local/clojure
+
+# Lein
+export LEIN_HOME=/Users/salespaulo/home/local/leiningen
+
 # PATH
-export PATH="$PATH:SCALA_HOME/bin:$SBT_HOME/bin:$M2:$ANT/bin:$RVM_HOME/bin" # Add RVM to PATH for scripting
+export PATH="$PATH:$SCALA_HOME/bin:$SBT_HOME/bin:$LEIN_HOME/bin:$M2:$ANT/bin:$RVM_HOME/bin" # Add RVM to PATH for scripting
 
 ###########################################################################
