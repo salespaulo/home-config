@@ -6,7 +6,7 @@ syntax on
 filetype plugin indent on
 
 colorscheme base16-harmonic16
-
+"
 " Remaping the Leader key
 let mapleader=" "
 let base16colorspace=256
