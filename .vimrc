@@ -5,8 +5,6 @@ syntax on
 " Auto detect filetype
 filetype plugin indent on
 
-colorscheme base16-harmonic16
-"
 " Remaping the Leader key
 let mapleader=" "
 let base16colorspace=256
@@ -17,6 +15,8 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
 au BufRead,BufNewFile *.ftl setfiletype html
+
+"colorscheme base16-harmonic16
 
 set background=dark
 

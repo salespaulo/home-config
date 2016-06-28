@@ -1,7 +1,4 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =5
-let g:netrw_dirhist_1='/Users/salespaulo/.oh-my-zsh'
-let g:netrw_dirhist_2='/Users/salespaulo'
-let g:netrw_dirhist_3='/Users/salespaulo/home/work/dev/ps/workspace/nodejs/jira-statistics'
-let g:netrw_dirhist_4='/Users/salespaulo/home/work/dev/vivareal/workspace/vivareal-feeds-developments/vr-feeds-developments-api'
-let g:netrw_dirhist_5='/Users/salespaulo/home/work/dev/ps/workspace/jira-statistics'
+let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_1='/Users/salespaulo/home/work/dev/ps/workspace/nota-fiscal-angular/app'
+let g:netrw_dirhist_2='/Users/salespaulo/home/work/dev/ps/workspace/nota-fiscal-angular'
